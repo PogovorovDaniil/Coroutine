@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-public interface DeltaProvider
+public interface IDeltaProvider
 {
     float Delta { get; }
 }
-
-public class Coroutine : DeltaProvider
+public class Coroutine : IDeltaProvider
 {
     private IEnumerator<float> action;
     private bool move;
     private Task task;
     public float Delta { get; private set; }
 
-    public Coroutine(Func<DeltaProvider, IEnumerator<float>> action)
+    public Coroutine(Func<IDeltaProvider, IEnumerator<float>> action)
     {
         move = true;
         this.action = action(this);
@@ -53,11 +52,11 @@ public class Program
         coroutine.Stop();
     }
 
-    static IEnumerator<float> Loop(DeltaProvider deltaProvider)
+    static IEnumerator<float> Loop(IDeltaProvider deltaProvider)
     {
         for (float i = 0; ; i += deltaProvider.Delta)
         {
-            Console.WriteLine($"1 - {i}");
+            Console.WriteLine(i);
             yield return 0.01f;
         }
     }
